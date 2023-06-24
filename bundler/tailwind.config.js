@@ -15,13 +15,17 @@ while (i <= maxFontSize) {
   i = i + 2
 }
 
+console.log(defaultTheme.fontFamily);
+
 module.exports = {
   content: content,
   theme: {
     fontSize: { ...fontSizes },
     extend: {
       fontFamily: {
-        'rubik': ['Rubik', ...defaultTheme.fontFamily.sans],
+        'sans': ['inconsolata', ...defaultTheme.fontFamily.sans],
+        'serif': ['lora', ...defaultTheme.fontFamily.serif],
+        'mono': ['inter', ...defaultTheme.fontFamily.mono],
       },
       fontWeight: {
         "weight-400": 400,
