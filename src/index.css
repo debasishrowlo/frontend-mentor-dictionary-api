@@ -21,5 +21,9 @@
   src: url(./assets/fonts/inter/Inter-VariableFont_slnt,wght.ttf);
 }
 
+body {
+  @apply text-black;
+}
+
 @tailwind components;
 @tailwind utilities;

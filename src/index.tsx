@@ -2,6 +2,10 @@ import React, { useState, FormEvent } from "react"
 import { createRoot } from "react-dom/client"
 import classnames from "classnames"
 
+import logo from "./assets/images/logo.svg"
+import arrowDownIcon from "./assets/images/icon-arrow-down.svg"
+import moonIcon from "./assets/images/icon-moon.svg"
+
 import "./index.css"
 
 const fontTypes = {
@@ -27,7 +31,7 @@ type Word = {
 
 const App = () => {
   const [query, setQuery] = useState("")
-  const [font, setFont] = useState(fontTypes.serif)
+  const [font, setFont] = useState(fontTypes.sans)
   const [word, setWord] = useState<Word>({
     value: "keyboard",
     phonetic: "/ˈkiːbɔːd/",
@@ -137,24 +141,36 @@ const App = () => {
   }
 
   return (
-    <div className={classnames("max-w-3xl mx-auto", {
-      "font-sans": font === fontTypes.serif,
-      "font-serif": font === fontTypes.sans,
+    <div className={classnames("p-6 max-w-3xl mx-auto", {
+      "font-serif": font === fontTypes.serif,
+      "font-sans": font === fontTypes.sans,
       "font-mono": font === fontTypes.mono,
     })}>
       <div className="flex justify-between">
-        <p>L</p>
-        <div className="flex">
-          <select 
+        <img src={logo} className="w-7" />
+        <div className="flex items-center">
+          <button type="button" className="h-full px-4 flex items-center">
+            <span className="text-14 font-bold">
+              {font === fontTypes.serif && "Serif"}
+              {font === fontTypes.sans && "Sans Serif"}
+              {font === fontTypes.mono && "Mono"}
+            </span>
+            <img src={arrowDownIcon} className="w-3 ml-4" />
+          </button>
+          {/* <select 
             onChange={(e) => setFont(e.target.value)}
             value={font}
           >
             <option value="sans-serif">Sans Serif</option>
             <option value="serif">Serif</option>
             <option value="mono">Mono</option>
-          </select>
-          <p>toggle</p>
-          <p>Icon</p>
+          </select> */}
+          <button type="button" className="h-full pl-4 border-l border-light-gray flex items-center">
+            <div className="w-10 h-5 px-1 flex items-center bg-grayish-blue rounded-full">
+              <div className="w-3.5 h-3.5 bg-white rounded-full"></div>
+            </div>
+            <img src={moonIcon} className="ml-3 w-5" />
+          </button>
         </div>
       </div>
       <div className="mt-6 flex">

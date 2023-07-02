@@ -15,17 +15,15 @@ while (i <= maxFontSize) {
   i = i + 2
 }
 
-console.log(defaultTheme.fontFamily);
-
 module.exports = {
   content: content,
   theme: {
     fontSize: { ...fontSizes },
     extend: {
       fontFamily: {
-        'sans': ['inconsolata', ...defaultTheme.fontFamily.sans],
+        'sans': ['inter', ...defaultTheme.fontFamily.sans],
         'serif': ['lora', ...defaultTheme.fontFamily.serif],
-        'mono': ['inter', ...defaultTheme.fontFamily.mono],
+        'mono': ['inconsolata', ...defaultTheme.fontFamily.mono],
       },
       fontWeight: {
         "weight-400": 400,
@@ -33,19 +31,20 @@ module.exports = {
         "weight-700": 700,
       },
       colors: {
-        "light-grayish-blue": "hsl(239, 57%, 85%)",
-        "grayish-blue": "hsl(211, 10%, 45%)",
+        "light-grayish-blue": "#c3c4ef",
+        "grayish-blue": "#67727e",
 
-        "moderate-blue": "hsl(238, 40%, 52%)",
-        "dark-blue": "hsl(212, 24%, 26%)",
+        "moderate-blue": "#5457b6",
+        "dark-blue": "#324152",
 
-        "pale-red": "hsl(357, 100%, 86%)",
-        "soft-red": "hsl(358, 79%, 66%)",
+        "pale-red": "	#ffb8bb",
+        "soft-red": "	#ed6468",
 
-        "very-light-gray": "hsl(228, 33%, 97%)",
-        "light-gray": "hsl(223, 19%, 93%)",
+        "very-light-gray": "#f5f6fa",
+        "light-gray": "#eaecf1",
 
-        "white": "hsl(0, 0%, 100%)",
+        "black": "#2D2D2D",
+        "white": "#ffffff",
       },
     },
   },
