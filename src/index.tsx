@@ -7,6 +7,7 @@ import arrowDownIcon from "./assets/images/icon-arrow-down.svg"
 import moonIcon from "./assets/images/icon-moon.svg"
 import searchIcon from "./assets/images/icon-search.svg"
 import playIcon from "./assets/images/icon-play.svg"
+import newWindowIcon from "./assets/images/icon-new-window.svg"
 
 import "./index.css"
 
@@ -206,13 +207,13 @@ const App = () => {
             <div className="ml-4 grow border-t border-gray-200" />
           </div>
           <div className="mt-8">
-            <p>Meaning</p>
-            <ul>
+            <p className="text-gray-300">Meaning</p>
+            <ul className="mt-4 pl-4 list-disc">
               {meaning.definitions.map((definition, index) => (
-                <li key={index}>
-                  <p>{definition.value}</p>
+                <li key={index} className="mt-3 first:mt-0 text-purple">
+                  <p className="text-gray-500">{definition.value}</p>
                   {definition.example && (
-                    <p>{definition.example}</p>
+                    <p className="mt-3 text-gray-300">{definition.example}</p>
                   )}
                 </li>
               ))}
@@ -227,6 +228,7 @@ const App = () => {
                     type="button"
                     onClick={() => search(synonym)}
                     key={index}
+                    className="font-bold text-purple"
                   >
                     {synonym}
                   </button>
@@ -238,13 +240,15 @@ const App = () => {
       ))}
       {(word.sourceUrls.length > 0) && (
         <div className="mt-8 border-t">
-          <p>Source</p>
-          {word.sourceUrls.map((url, index) => (
-            <p key={index}>
-              <a href={url} target="_blank">{url}</a>
-              <span>R</span>
-            </p>
-          ))}
+          <p className="mt-6 text-gray-300 underline">Source</p>
+          <div className="mt-2">
+            {word.sourceUrls.map((url, index) => (
+              <p key={index} className="mt-1 first:mt-0 flex items-center text-gray-500">
+                <a href={url} target="_blank" className="underline">{url}</a>
+                <img src={newWindowIcon} className="w-3 ml-2" />
+              </p>
+            ))}
+          </div>
         </div>
       )}
     </div>
