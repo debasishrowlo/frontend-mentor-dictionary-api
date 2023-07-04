@@ -5,6 +5,8 @@ import classnames from "classnames"
 import logo from "./assets/images/logo.svg"
 import arrowDownIcon from "./assets/images/icon-arrow-down.svg"
 import moonIcon from "./assets/images/icon-moon.svg"
+import searchIcon from "./assets/images/icon-search.svg"
+import playIcon from "./assets/images/icon-play.svg"
 
 import "./index.css"
 
@@ -31,7 +33,7 @@ type Word = {
 
 const App = () => {
   const [query, setQuery] = useState("")
-  const [font, setFont] = useState(fontTypes.sans)
+  const [font, setFont] = useState(fontTypes.serif)
   const [word, setWord] = useState<Word>({
     value: "keyboard",
     phonetic: "/ˈkiːbɔːd/",
@@ -117,7 +119,7 @@ const App = () => {
             partOfSpeech: meaning.partOfSpeech,
             definitions: meaning.definitions.map((definition:any) => {
               let result:any = {
-                definition: definition.definition,
+                value: definition.definition,
               }
 
               if (definition.example) {
@@ -165,37 +167,44 @@ const App = () => {
             <option value="serif">Serif</option>
             <option value="mono">Mono</option>
           </select> */}
-          <button type="button" className="h-full pl-4 border-l border-light-gray flex items-center">
-            <div className="w-10 h-5 px-1 flex items-center bg-grayish-blue rounded-full">
+          <button type="button" className="h-full pl-4 border-l border-gray-100 flex items-center">
+            <div className="w-10 h-5 px-1 flex items-center bg-gray-300 rounded-full">
               <div className="w-3.5 h-3.5 bg-white rounded-full"></div>
             </div>
             <img src={moonIcon} className="ml-3 w-5" />
           </button>
         </div>
       </div>
-      <div className="mt-6 flex">
-        <form onSubmit={(e:FormEvent) => handleSubmit(e)}>
+      <div className="mt-6">
+        <form onSubmit={(e:FormEvent) => handleSubmit(e)} className="flex bg-gray-100 rounded-2xl">
           <input 
             type="text" 
-            className="w-full border" 
-            value={query} 
+            className="w-full pl-6 bg-transparent font-bold outline-none" 
+            value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button type="submit" className="">S</button>
+          <button type="submit" className="px-6 py-4 shrink-0">
+            <img src={searchIcon} className="w-4 h-4" />
+          </button>
         </form>
       </div>
       <div className="mt-6 flex justify-between items-center">
         <div>
-          <p className="font-bold">{word.value}</p>
-          <p>{word.phonetic}</p>
+          <p className="text-32 font-bold">{word.value}</p>
+          <p className="text-18 text-purple">{word.phonetic}</p>
         </div>
-        <div>
-          Play
-        </div>
+        <button type="button">
+          <img src={playIcon} className="w-12" />
+        </button>
       </div>
       {word.meanings.map((meaning, index) => (
         <div key={index}>
-          <p className="mt-7">{meaning.partOfSpeech}</p>
+          <div className="mt-7 flex items-center">
+            <p className={classnames("text-18 font-bold", {
+              "italic": font === fontTypes.serif
+            })}>{meaning.partOfSpeech}</p>
+            <div className="ml-4 grow border-t border-gray-200" />
+          </div>
           <div className="mt-8">
             <p>Meaning</p>
             <ul>

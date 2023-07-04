@@ -21,9 +21,9 @@ module.exports = {
     fontSize: { ...fontSizes },
     extend: {
       fontFamily: {
-        'sans': ['inter', ...defaultTheme.fontFamily.sans],
-        'serif': ['lora', ...defaultTheme.fontFamily.serif],
-        'mono': ['inconsolata', ...defaultTheme.fontFamily.mono],
+        'sans': ['Inter', ...defaultTheme.fontFamily.sans],
+        'serif': ['Lora', ...defaultTheme.fontFamily.serif],
+        'mono': ['Inconsolata', ...defaultTheme.fontFamily.mono],
       },
       fontWeight: {
         "weight-400": 400,
@@ -31,20 +31,18 @@ module.exports = {
         "weight-700": 700,
       },
       colors: {
-        "light-grayish-blue": "#c3c4ef",
-        "grayish-blue": "#67727e",
-
-        "moderate-blue": "#5457b6",
-        "dark-blue": "#324152",
-
-        "pale-red": "	#ffb8bb",
-        "soft-red": "	#ed6468",
-
-        "very-light-gray": "#f5f6fa",
-        "light-gray": "#eaecf1",
-
-        "black": "#2D2D2D",
-        "white": "#ffffff",
+        "purple": "#A445ED",
+        "red": "#FF5252",
+        "gray": {
+          100: "#F4F4F4",
+          200: "#E9E9E9",
+          300: "#757575",
+          400: "#3A3A3A",
+          500: "#2D2D2D",
+          600: "#1F1F1F",
+        },
+        "black": "#050505",
+        "white": "#FFFFFF",
       },
     },
   },
