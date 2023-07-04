@@ -150,7 +150,7 @@ const App = () => {
   }
 
   return (
-    <div className={classnames("p-6 max-w-3xl mx-auto", {
+    <div className={classnames("p-6 max-w-3xl mx-auto md:px-9 md:py-14", {
       "font-serif": font === fontTypes.serif,
       "font-sans": font === fontTypes.sans,
       "font-mono": font === fontTypes.mono,
@@ -182,23 +182,23 @@ const App = () => {
           </button>
         </div>
       </div>
-      <div className="mt-6">
-        <form onSubmit={(e:FormEvent) => handleSubmit(e)} className="flex bg-gray-100 rounded-2xl">
+      <div className="mt-6 md:mt-12">
+        <form onSubmit={(e:FormEvent) => handleSubmit(e)} className="flex relative bg-gray-100 rounded-2xl">
           <input 
             type="text" 
-            className="w-full pl-6 bg-transparent font-bold outline-none" 
+            className="w-full pl-6 pr-14 py-3 border border-transparent focus:border-purple bg-transparent font-bold rounded-2xl outline-none caret-purple transition-colors duration-200"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button type="submit" className="px-6 py-4 shrink-0">
+          <button type="submit" className="h-full px-6 py-4 absolute top-0 right-0">
             <img src={searchIcon} className="w-4 h-4" />
           </button>
         </form>
       </div>
-      <div className="mt-6 flex justify-between items-center">
+      <div className="mt-6 flex justify-between items-center md:mt-10">
         <div>
           <p className="text-32 font-bold">{word.value}</p>
-          <p className="text-18 text-purple">{word.phonetic}</p>
+          <p className="text-18 text-purple md:mt-1">{word.phonetic}</p>
         </div>
         <button type="button">
           <img src={playIcon} className="w-12" />
@@ -206,15 +206,15 @@ const App = () => {
       </div>
       {word.meanings.map((meaning, index) => (
         <div key={index}>
-          <div className="mt-7 flex items-center">
+          <div className="mt-7 flex items-center md:mt-10">
             <p className={classnames("text-18 font-bold", {
               "italic": font === fontTypes.serif
             })}>{meaning.partOfSpeech}</p>
             <div className="ml-4 grow border-t border-gray-200" />
           </div>
-          <div className="mt-8">
+          <div className="mt-8 md:mt-10">
             <p className="text-gray-300">Meaning</p>
-            <ul className="mt-4 pl-4 list-disc">
+            <ul className="mt-4 pl-4 list-disc md:mt-6">
               {meaning.definitions.map((definition, index) => (
                 <li key={index} className="mt-3 first:mt-0 text-purple">
                   <p className="text-gray-500">{definition.value}</p>
@@ -226,7 +226,7 @@ const App = () => {
             </ul>
           </div>
           {(meaning.synonyms.length > 0) && (
-            <p className="mt-6">
+            <p className="mt-6 md:mt-10">
               <span>Synonyms</span>
               <span className="ml-6">
                 {meaning.synonyms.map((synonym, index) => (
@@ -234,7 +234,7 @@ const App = () => {
                     type="button"
                     onClick={() => handleSynonymClick(synonym)}
                     key={index}
-                    className="mr-4 font-bold text-purple"
+                    className="mr-3 font-bold text-purple"
                   >
                     {synonym}
                   </button>
@@ -245,7 +245,7 @@ const App = () => {
         </div>
       ))}
       {(word.sourceUrls.length > 0) && (
-        <div className="mt-8 border-t">
+        <div className="mt-8 border-t md:mt-10">
           <p className="mt-6 text-gray-300 underline">Source</p>
           <div className="mt-2">
             {word.sourceUrls.map((url, index) => (
