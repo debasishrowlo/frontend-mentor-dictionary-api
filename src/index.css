@@ -4,5 +4,9 @@ body {
   @apply text-gray-500;
 }
 
+::selection {
+  @apply bg-purple text-white;
+}
+
 @tailwind components;
 @tailwind utilities;
