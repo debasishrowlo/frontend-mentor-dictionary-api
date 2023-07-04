@@ -1,6 +1,7 @@
 import React, { useState, FormEvent } from "react"
 import { createRoot } from "react-dom/client"
 import classnames from "classnames"
+import { Listbox, Transition } from "@headlessui/react"
 
 import logo from "./assets/images/logo.svg"
 import arrowDownIcon from "./assets/images/icon-arrow-down.svg"
@@ -11,9 +12,9 @@ import newWindowIcon from "./assets/images/icon-new-window.svg"
 
 import "./index.css"
 
-const fontTypes = {
+const fontTypes:{ [key:string]: string } = {
+  sans: "sans",
   serif: "serif",
-  sans: "sans-serif",
   mono: "mono",
 }
 
@@ -30,6 +31,22 @@ type Word = {
     synonyms: string[],
   }>,
   sourceUrls: string[],
+}
+
+const getFontName = (fontType:string) => {
+  if (fontType === fontTypes.serif) {
+    return "Serif"
+  }
+
+  if (fontType === fontTypes.sans) {
+    return "Sans Serif"
+  }
+
+  if (fontType === fontTypes.mono) {
+    return "Mono"
+  }
+
+  return null
 }
 
 const App = () => {
@@ -149,31 +166,57 @@ const App = () => {
     window.scrollTo(0, 0)
   }
 
+  const getFontClassName = (fontType:string) => {
+    if (fontType === fontTypes.serif) {
+      return "font-serif"
+    }
+
+    if (fontType === fontTypes.sans) {
+      return "font-sans"
+    }
+
+    if (fontType === fontTypes.mono) {
+      return "font-mono"
+    }
+
+    return null
+  }
+
   return (
-    <div className={classnames("p-6 max-w-3xl mx-auto md:px-9 md:py-14", {
-      "font-serif": font === fontTypes.serif,
-      "font-sans": font === fontTypes.sans,
-      "font-mono": font === fontTypes.mono,
-    })}>
+    <div className={`p-6 max-w-3xl mx-auto md:px-9 md:py-14 ${getFontClassName(font)}`}>
       <div className="flex justify-between">
         <img src={logo} className="w-7" />
         <div className="flex items-center">
-          <button type="button" className="h-full px-4 flex items-center">
-            <span className="text-14 font-bold">
-              {font === fontTypes.serif && "Serif"}
-              {font === fontTypes.sans && "Sans Serif"}
-              {font === fontTypes.mono && "Mono"}
-            </span>
-            <img src={arrowDownIcon} className="w-3 ml-4" />
-          </button>
-          {/* <select 
-            onChange={(e) => setFont(e.target.value)}
-            value={font}
-          >
-            <option value="sans-serif">Sans Serif</option>
-            <option value="serif">Serif</option>
-            <option value="mono">Mono</option>
-          </select> */}
+          <div className="h-full relative z-10">
+            <Listbox value={font} onChange={setFont}>
+              <Listbox.Button className="h-full px-4 flex items-center">
+                <span className="text-14 font-bold">
+                  {getFontName(font)}
+                </span>
+                <img src={arrowDownIcon} className="w-3 ml-4" />
+              </Listbox.Button>
+              <Transition
+                enter="transition-transform duration-200 ease-out"
+                enterFrom="-translate-y-2"
+                enterTo="translate-y-0"
+                leave="transition duration-100 ease-out"
+                leaveFrom="translate-y-0 opacity-100"
+                leaveTo="-translate-y-2 opacity-0"
+              >
+                <Listbox.Options className="w-44 mt-2 py-4 absolute z-10 top-full right-4 border bg-white rounded-2xl shadow-xl">
+                  {Object.keys(fontTypes).map((fontKey) => (
+                    <Listbox.Option 
+                      key={fontKey} 
+                      value={fontKey}
+                      className={`${getFontClassName(fontKey)} px-6 py-2 hover:bg-gray-100 whitespace-nowrap cursor-pointer transition-colors duration-200`}
+                    >
+                      {getFontName(fontKey)}
+                    </Listbox.Option>
+                  ))}
+                </Listbox.Options>
+              </Transition>
+            </Listbox>
+          </div>
           <button type="button" className="h-full pl-4 border-l border-gray-100 flex items-center">
             <div className="w-10 h-5 px-1 flex items-center bg-gray-300 rounded-full">
               <div className="w-3.5 h-3.5 bg-white rounded-full"></div>
