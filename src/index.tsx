@@ -143,6 +143,12 @@ const App = () => {
     search(query)
   }
 
+  const handleSynonymClick = (synonym:string) => {
+    setQuery(synonym)
+    search(synonym)
+    window.scrollTo(0, 0)
+  }
+
   return (
     <div className={classnames("p-6 max-w-3xl mx-auto", {
       "font-serif": font === fontTypes.serif,
@@ -226,9 +232,9 @@ const App = () => {
                 {meaning.synonyms.map((synonym, index) => (
                   <button
                     type="button"
-                    onClick={() => search(synonym)}
+                    onClick={() => handleSynonymClick(synonym)}
                     key={index}
-                    className="font-bold text-purple"
+                    className="mr-4 font-bold text-purple"
                   >
                     {synonym}
                   </button>
