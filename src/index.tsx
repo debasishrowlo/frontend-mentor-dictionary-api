@@ -82,6 +82,7 @@ const App = () => {
       "https://en.wiktionary.org/wiki/keyboard",
     ],
   });
+  const [errorVisible, setErrorVisible] = useState(false)
 
   type APIResponse = Array<{
     word: string,
@@ -157,6 +158,12 @@ const App = () => {
 
   const handleSubmit = (e:FormEvent) => {
     e.preventDefault()
+
+    if (query === "") {
+      setErrorVisible(true)
+      return
+    }
+
     search(query)
   }
 
@@ -183,16 +190,14 @@ const App = () => {
   }
 
   return (
-    <div className={`p-6 max-w-3xl mx-auto md:px-9 md:py-14 ${getFontClassName(font)}`}>
+    <div className={`p-6 max-w-[736px] mx-auto md:px-9 md:py-14 lg:px-0 ${getFontClassName(font)}`}>
       <div className="flex justify-between">
-        <img src={logo} className="w-7" />
+        <img src={logo} className="w-6 md:w-8" />
         <div className="flex items-center">
           <div className="h-full relative z-10">
             <Listbox value={font} onChange={setFont}>
               <Listbox.Button className="h-full px-4 flex items-center">
-                <span className="text-14 font-bold">
-                  {getFontName(font)}
-                </span>
+                <span className="text-14 font-bold md:text-18">{getFontName(font)}</span>
                 <img src={arrowDownIcon} className="w-3 ml-4" />
               </Listbox.Button>
               <Transition
@@ -206,9 +211,9 @@ const App = () => {
                 <Listbox.Options className="w-44 mt-2 py-4 absolute z-10 top-full right-4 border bg-white rounded-2xl shadow-xl">
                   {Object.keys(fontTypes).map((fontKey) => (
                     <Listbox.Option 
-                      key={fontKey} 
+                      key={fontKey}
                       value={fontKey}
-                      className={`${getFontClassName(fontKey)} px-6 py-2 hover:bg-gray-100 whitespace-nowrap cursor-pointer transition-colors duration-200`}
+                      className={`${getFontClassName(fontKey)} px-6 py-2 text-14 font-bold text-gray-500 hover:text-purple whitespace-nowrap cursor-pointer transition-colors duration-200 md:text-18`}
                     >
                       {getFontName(fontKey)}
                     </Listbox.Option>
@@ -229,9 +234,10 @@ const App = () => {
         <form onSubmit={(e:FormEvent) => handleSubmit(e)} className="flex relative bg-gray-100 rounded-2xl">
           <input 
             type="text" 
-            className="w-full pl-6 pr-14 py-3 border border-transparent focus:border-purple bg-transparent font-bold rounded-2xl outline-none caret-purple transition-colors duration-200"
+            className="w-full pl-6 pr-14 py-3 border border-transparent focus:border-purple bg-transparent font-bold rounded-2xl outline-none caret-purple transition-colors duration-200 md:text-20"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            autoFocus
           />
           <button type="submit" className="h-full px-6 py-4 absolute top-0 right-0">
             <img src={searchIcon} className="w-4 h-4" />
@@ -240,44 +246,44 @@ const App = () => {
       </div>
       <div className="mt-6 flex justify-between items-center md:mt-10">
         <div>
-          <p className="text-32 font-bold">{word.value}</p>
-          <p className="text-18 text-purple md:mt-1">{word.phonetic}</p>
+          <p className="text-32 font-bold md:text-64">{word.value}</p>
+          <p className="text-18 text-purple md:mt-1 md:text-24">{word.phonetic}</p>
         </div>
         <button type="button">
-          <img src={playIcon} className="w-12" />
+          <img src={playIcon} className="w-12 md:w-20" />
         </button>
       </div>
       {word.meanings.map((meaning, index) => (
-        <div key={index}>
-          <div className="mt-7 flex items-center md:mt-10">
-            <p className={classnames("text-18 font-bold", {
+        <div key={index} className="mt-7 md:mt-10">
+          <div className="flex items-center">
+            <p className={classnames("text-18 font-bold md:text-24", {
               "italic": font === fontTypes.serif
             })}>{meaning.partOfSpeech}</p>
             <div className="ml-4 grow border-t border-gray-200" />
           </div>
           <div className="mt-8 md:mt-10">
-            <p className="text-gray-300">Meaning</p>
-            <ul className="mt-4 pl-4 list-disc md:mt-6">
+            <p className="text-gray-300 md:text-20">Meaning</p>
+            <ul className="mt-4 pl-4 list-disc md:mt-6 md:pl-9">
               {meaning.definitions.map((definition, index) => (
                 <li key={index} className="mt-3 first:mt-0 text-purple">
-                  <p className="text-gray-500">{definition.value}</p>
+                  <p className="text-gray-500 md:text-18">{definition.value}</p>
                   {definition.example && (
-                    <p className="mt-3 text-gray-300">{definition.example}</p>
+                    <p className="mt-3 text-gray-300 md:text-18">&#8220;{definition.example}&#8221;</p>
                   )}
                 </li>
               ))}
             </ul>
           </div>
           {(meaning.synonyms.length > 0) && (
-            <p className="mt-6 md:mt-10">
-              <span>Synonyms</span>
+            <p className="mt-6 md:mt-10 lg:mt-16">
+              <span className="text-gray-300 md:text-20">Synonyms</span>
               <span className="ml-6">
                 {meaning.synonyms.map((synonym, index) => (
                   <button
                     type="button"
                     onClick={() => handleSynonymClick(synonym)}
                     key={index}
-                    className="mr-3 font-bold text-purple"
+                    className="mr-3 font-bold text-purple md:text-20"
                   >
                     {synonym}
                   </button>
@@ -288,11 +294,13 @@ const App = () => {
         </div>
       ))}
       {(word.sourceUrls.length > 0) && (
-        <div className="mt-8 border-t md:mt-10">
-          <p className="mt-6 text-gray-300 underline">Source</p>
-          <div className="mt-2">
+        <div className="mt-8 border-t md:mt-10 pt-6 md:pt-5 md:flex">
+          <p className="text-14">
+            <span className="border-b border-grey-300 text-gray-300">Source</span>
+          </p>
+          <div className="mt-2 md:ml-5 md:mt-0">
             {word.sourceUrls.map((url, index) => (
-              <p key={index} className="mt-1 first:mt-0 flex items-center text-gray-500">
+              <p key={index} className="mt-1 first:mt-0 flex items-center text-14 text-gray-500">
                 <a href={url} target="_blank" className="underline">{url}</a>
                 <img src={newWindowIcon} className="w-3 ml-2" />
               </p>

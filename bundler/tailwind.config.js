@@ -8,7 +8,7 @@ const content = Object.values(globEntries(paths.src + "/**/*.{html,js,jsx,ts,tsx
 
 const fontSizes = {}
 const minFontSize = 12
-const maxFontSize = 50
+const maxFontSize = 70
 let i = minFontSize
 while (i <= maxFontSize) {
   fontSizes[i] = `${i / 16}rem`
@@ -31,6 +31,7 @@ module.exports = {
         "weight-700": 700,
       },
       colors: {
+        "light-purple": "#8F19E8",
         "purple": "#A445ED",
         "red": "#FF5252",
         "gray": {
