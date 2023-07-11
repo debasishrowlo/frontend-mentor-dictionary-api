@@ -52,6 +52,7 @@ const getFontName = (fontType:string) => {
 const App = () => {
   const [query, setQuery] = useState("")
   const [font, setFont] = useState(fontTypes.serif)
+  const [darkModeEnabled, setDarkModeEnabled] = useState(false)
   const [word, setWord] = useState<Word>({
     value: "keyboard",
     phonetic: "/ˈkiːbɔːd/",
@@ -222,9 +223,18 @@ const App = () => {
               </Transition>
             </Listbox>
           </div>
-          <button type="button" className="h-full pl-4 border-l border-gray-100 flex items-center">
+          <button 
+            type="button" 
+            className="h-full pl-4 border-l border-gray-100 flex items-center"
+            onClick={() => setDarkModeEnabled(!darkModeEnabled)}
+          >
             <div className="w-10 h-5 px-1 flex items-center bg-gray-300 rounded-full">
-              <div className="w-3.5 h-3.5 bg-white rounded-full"></div>
+              <div className="w-full h-full relative">
+                <div className={classnames("w-3.5 h-3.5 absolute top-1/2 -translate-y-1/2 bg-white rounded-full transition-all duration-300", {
+                  "left-0 translate-x-0": !darkModeEnabled,
+                  "left-full -translate-x-full": darkModeEnabled,
+                })}></div>
+              </div>
             </div>
             <img src={moonIcon} className="ml-3 w-5" />
           </button>
