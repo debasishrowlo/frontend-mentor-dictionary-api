@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from "react"
+import React, { useEffect, useState, useRef, FormEvent } from "react"
 import { createRoot } from "react-dom/client"
 import classnames from "classnames"
 import { Listbox, Transition } from "@headlessui/react"
@@ -11,12 +11,6 @@ import playIcon from "./assets/images/icon-play.svg"
 import newWindowIcon from "./assets/images/icon-new-window.svg"
 
 import "./index.css"
-
-const fontTypes:{ [key:string]: string } = {
-  sans: "sans",
-  serif: "serif",
-  mono: "mono",
-}
 
 type Word = {
   value: string,
@@ -31,6 +25,47 @@ type Word = {
     synonyms: string[],
   }>,
   sourceUrls: string[],
+}
+
+type APIResponse = Array<{
+  word: string,
+  phonetic: string,
+  phonetics: Array<{
+    text: string,
+    audio: string,
+    sourceUrl?: string,
+    license?: {
+      name: string,
+      url: string,
+    },
+  }>
+  meanings: Array<{
+    partOfSpeech: string,
+    definitions: Array<{
+      definition: string,
+      synonyms: string[],
+      antonyms: string[],
+      example?: string,
+    }>,
+    synonyms: string[],
+    antonyms: string[],
+  }>,
+  license: {
+    name: string,
+    url: string,
+  },
+  sourceUrls: string[],
+}>
+
+const enum themes {
+  light = "light",
+  dark = "dark",
+}
+
+const fontTypes:{ [key:string]: string } = {
+  sans: "sans",
+  serif: "serif",
+  mono: "mono",
 }
 
 const getFontName = (fontType:string) => {
@@ -49,10 +84,20 @@ const getFontName = (fontType:string) => {
   return null
 }
 
+const getDefaultTheme = () => {
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    return themes.dark
+  } else {
+    return themes.light
+  }
+}
+
 const App = () => {
+  const firstRenderRef = useRef(true)
+
   const [query, setQuery] = useState("")
   const [font, setFont] = useState(fontTypes.serif)
-  const [darkModeEnabled, setDarkModeEnabled] = useState(false)
+  const [theme, setTheme] = useState<themes>(getDefaultTheme())
   const [word, setWord] = useState<Word>({
     value: "keyboard",
     phonetic: "/ˈkiːbɔːd/",
@@ -85,35 +130,7 @@ const App = () => {
   });
   const [errorVisible, setErrorVisible] = useState(false)
 
-  type APIResponse = Array<{
-    word: string,
-    phonetic: string,
-    phonetics: Array<{
-      text: string,
-      audio: string,
-      sourceUrl?: string,
-      license?: {
-        name: string,
-        url: string,
-      },
-    }>
-    meanings: Array<{
-      partOfSpeech: string,
-      definitions: Array<{
-        definition: string,
-        synonyms: string[],
-        antonyms: string[],
-        example?: string,
-      }>,
-      synonyms: string[],
-      antonyms: string[],
-    }>,
-    license: {
-      name: string,
-      url: string,
-    },
-    sourceUrls: string[],
-  }>
+  const darkModeEnabled = theme === themes.dark
 
   const search = (word:string) => {
     fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
@@ -190,6 +207,27 @@ const App = () => {
     return null
   }
 
+  const toggleTheme = () => {
+    setTheme(theme === themes.dark ? themes.light : themes.dark)
+  }
+
+  useEffect(() => {
+    const firstRender = firstRenderRef.current
+
+    if (!firstRender) { document.documentElement.classList.add("animate-all") }
+    if (theme === themes.dark) {
+      document.documentElement.classList.add("dark")
+    } else {
+      document.documentElement.classList.remove("dark")
+    }
+
+    setTimeout(() => {
+      document.documentElement.classList.remove("animate-all")
+    }, 500)
+
+    if (firstRender) { firstRenderRef.current = false }
+  }, [theme])
+
   return (
     <div className={`p-6 max-w-[736px] mx-auto md:px-9 md:py-14 lg:px-0 ${getFontClassName(font)}`}>
       <div className="flex justify-between">
@@ -226,11 +264,11 @@ const App = () => {
           <button 
             type="button" 
             className="h-full pl-4 border-l border-gray-100 flex items-center"
-            onClick={() => setDarkModeEnabled(!darkModeEnabled)}
+            onClick={() => toggleTheme()}
           >
             <div className="w-10 h-5 px-1 flex items-center bg-gray-300 rounded-full">
               <div className="w-full h-full relative">
-                <div className={classnames("w-3.5 h-3.5 absolute top-1/2 -translate-y-1/2 bg-white rounded-full transition-all duration-300", {
+                <div className={classnames("w-3.5 h-3.5 absolute top-1/2 -translate-y-1/2 bg-white rounded-full transition-all duration-500", {
                   "left-0 translate-x-0": !darkModeEnabled,
                   "left-full -translate-x-full": darkModeEnabled,
                 })}></div>

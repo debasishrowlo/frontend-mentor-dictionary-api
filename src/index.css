@@ -1,7 +1,11 @@
 @tailwind base;
 
+.animate-all * {
+  @apply transition-all duration-500 !important;
+}
+
 body {
-  @apply text-gray-500;
+  @apply text-gray-500 dark:bg-black;
 }
 
 ::selection {
