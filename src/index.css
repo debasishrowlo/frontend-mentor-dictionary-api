@@ -12,5 +12,13 @@ body {
   @apply bg-purple text-white;
 }
 
+.dropdown-shadow {
+  box-shadow: 0px 5px 30px 0px rgba(0, 0, 0, 0.10);
+}
+
+:is(.dark .dropdown-shadow) {
+  box-shadow: 0px 5px 30px 0px #A445ED;
+}
+
 @tailwind components;
 @tailwind utilities;

@@ -3,9 +3,10 @@ import { createRoot } from "react-dom/client"
 import classnames from "classnames"
 import { Listbox, Transition } from "@headlessui/react"
 
-import logo from "./assets/images/logo.svg"
+import Logo from "./icons/Logo"
+import MoonIcon from "./icons/Moon"
+
 import arrowDownIcon from "./assets/images/icon-arrow-down.svg"
-import moonIcon from "./assets/images/icon-moon.svg"
 import searchIcon from "./assets/images/icon-search.svg"
 import playIcon from "./assets/images/icon-play.svg"
 import newWindowIcon from "./assets/images/icon-new-window.svg"
@@ -231,12 +232,12 @@ const App = () => {
   return (
     <div className={`p-6 max-w-[736px] mx-auto md:px-9 md:py-14 lg:px-0 ${getFontClassName(font)}`}>
       <div className="flex justify-between">
-        <img src={logo} className="w-6 md:w-8" />
+        <Logo className="w-6 stroke-current text-gray-300 md:w-8" />
         <div className="flex items-center">
           <div className="h-full relative z-10">
             <Listbox value={font} onChange={setFont}>
               <Listbox.Button className="h-full px-4 flex items-center">
-                <span className="text-14 font-bold md:text-18">{getFontName(font)}</span>
+                <span className="text-14 font-bold dark:text-white md:text-18">{getFontName(font)}</span>
                 <img src={arrowDownIcon} className="w-3 ml-4" />
               </Listbox.Button>
               <Transition
@@ -247,12 +248,12 @@ const App = () => {
                 leaveFrom="translate-y-0 opacity-100"
                 leaveTo="-translate-y-2 opacity-0"
               >
-                <Listbox.Options className="w-44 mt-2 py-4 absolute z-10 top-full right-4 border bg-white rounded-2xl shadow-xl">
+                <Listbox.Options className="w-44 mt-2 py-4 absolute z-10 top-full right-4 bg-white dark:bg-gray-600 rounded-2xl dropdown-shadow">
                   {Object.keys(fontTypes).map((fontKey) => (
                     <Listbox.Option 
                       key={fontKey}
                       value={fontKey}
-                      className={`${getFontClassName(fontKey)} px-6 py-2 text-14 font-bold text-gray-500 hover:text-purple whitespace-nowrap cursor-pointer transition-colors duration-200 md:text-18`}
+                      className={`${getFontClassName(fontKey)} px-6 py-2 text-14 font-bold dark:text-white hover:text-purple whitespace-nowrap cursor-pointer transition-colors duration-200 md:text-18`}
                     >
                       {getFontName(fontKey)}
                     </Listbox.Option>
@@ -263,10 +264,10 @@ const App = () => {
           </div>
           <button 
             type="button" 
-            className="h-full pl-4 border-l border-gray-100 flex items-center"
+            className="h-full pl-4 border-l border-gray-100 dark:border-gray-200 flex items-center outline-none"
             onClick={() => toggleTheme()}
           >
-            <div className="w-10 h-5 px-1 flex items-center bg-gray-300 rounded-full">
+            <div className="w-10 h-5 px-1 flex items-center bg-gray-300 dark:bg-purple rounded-full">
               <div className="w-full h-full relative">
                 <div className={classnames("w-3.5 h-3.5 absolute top-1/2 -translate-y-1/2 bg-white rounded-full transition-all duration-500", {
                   "left-0 translate-x-0": !darkModeEnabled,
@@ -274,15 +275,15 @@ const App = () => {
                 })}></div>
               </div>
             </div>
-            <img src={moonIcon} className="ml-3 w-5" />
+            <MoonIcon className="ml-3 w-5 stroke-current text-gray-300 dark:text-purple" />
           </button>
         </div>
       </div>
       <div className="mt-6 md:mt-12">
-        <form onSubmit={(e:FormEvent) => handleSubmit(e)} className="flex relative bg-gray-100 rounded-2xl">
+        <form onSubmit={(e:FormEvent) => handleSubmit(e)} className="flex relative bg-gray-100 dark:bg-gray-600 rounded-2xl">
           <input 
             type="text" 
-            className="w-full pl-6 pr-14 py-3 border border-transparent focus:border-purple bg-transparent font-bold rounded-2xl outline-none caret-purple transition-colors duration-200 md:text-20"
+            className="w-full pl-6 pr-14 py-3 border border-transparent focus:border-purple bg-transparent font-bold dark:text-white rounded-2xl outline-none caret-purple transition-colors duration-200 md:text-20"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             autoFocus
@@ -294,7 +295,7 @@ const App = () => {
       </div>
       <div className="mt-6 flex justify-between items-center md:mt-10">
         <div>
-          <p className="text-32 font-bold md:text-64">{word.value}</p>
+          <p className="text-32 font-bold dark:text-white md:text-64">{word.value}</p>
           <p className="text-18 text-purple md:mt-1 md:text-24">{word.phonetic}</p>
         </div>
         <button type="button">
@@ -304,17 +305,17 @@ const App = () => {
       {word.meanings.map((meaning, index) => (
         <div key={index} className="mt-7 md:mt-10">
           <div className="flex items-center">
-            <p className={classnames("text-18 font-bold md:text-24", {
+            <p className={classnames("text-18 font-bold dark:text-white md:text-24", {
               "italic": font === fontTypes.serif
             })}>{meaning.partOfSpeech}</p>
-            <div className="ml-4 grow border-t border-gray-200" />
+            <div className="ml-4 grow border-t border-gray-200 dark:border-gray-400" />
           </div>
           <div className="mt-8 md:mt-10">
             <p className="text-gray-300 md:text-20">Meaning</p>
             <ul className="mt-4 pl-4 list-disc md:mt-6 md:pl-9">
               {meaning.definitions.map((definition, index) => (
                 <li key={index} className="mt-3 first:mt-0 text-purple">
-                  <p className="text-gray-500 md:text-18">{definition.value}</p>
+                  <p className="text-gray-500 dark:text-white md:text-18">{definition.value}</p>
                   {definition.example && (
                     <p className="mt-3 text-gray-300 md:text-18">&#8220;{definition.example}&#8221;</p>
                   )}
@@ -344,12 +345,12 @@ const App = () => {
       {(word.sourceUrls.length > 0) && (
         <div className="mt-8 border-t md:mt-10 pt-6 md:pt-5 md:flex">
           <p className="text-14">
-            <span className="border-b border-grey-300 text-gray-300">Source</span>
+            <span className="border-b border-gray-300 text-gray-300">Source</span>
           </p>
           <div className="mt-2 md:ml-5 md:mt-0">
             {word.sourceUrls.map((url, index) => (
-              <p key={index} className="mt-1 first:mt-0 flex items-center text-14 text-gray-500">
-                <a href={url} target="_blank" className="underline">{url}</a>
+              <p key={index} className="mt-1 first:mt-0 flex items-center text-14">
+                <a href={url} target="_blank" className="dark:text-white underline">{url}</a>
                 <img src={newWindowIcon} className="w-3 ml-2" />
               </p>
             ))}
