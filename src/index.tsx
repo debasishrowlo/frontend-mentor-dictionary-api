@@ -10,6 +10,7 @@ import arrowDownIcon from "./assets/images/icon-arrow-down.svg"
 import searchIcon from "./assets/images/icon-search.svg"
 import playIcon from "./assets/images/icon-play.svg"
 import newWindowIcon from "./assets/images/icon-new-window.svg"
+import confusedEmojiIcon from "./assets/images/confused-emoji.svg"
 
 import "./index.css"
 
@@ -133,46 +134,60 @@ const App = () => {
 
   const darkModeEnabled = theme === themes.dark
 
-  const search = (word:string) => {
-    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
-      .then(response => response.json())
-      .then((response:APIResponse) => {
-        const data = response[0]
+  const search = async (word:string) => {
+    if (notFoundErrorVisible) {
+      setNotFoundErrorVisible(false)
+    }
 
-        let partialResult:Partial<Word> = {
-          value: data.word,
-          phonetic: data.phonetic,
-          sourceUrls: data.sourceUrls,
-        }
+    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
 
-        const phoneticWithAudio = data.phonetics.find((phonetic) => {
-          return phonetic.audio !== ""
-        })
-        if (phoneticWithAudio) {
-          partialResult.audio = phoneticWithAudio.audio
-        }
+    if (!response.ok) {
+      if (response.status === 404) {
+        setNotFoundErrorVisible(true)
+        return
+      }
 
-        partialResult.meanings = data.meanings.map((meaning:any) => {
-          return {
-            partOfSpeech: meaning.partOfSpeech,
-            definitions: meaning.definitions.map((definition:any) => {
-              let result:any = {
-                value: definition.definition,
-              }
+      console.error("Something went wrong")
+      return
+    }
 
-              if (definition.example) {
-                result.example = definition.example
-              }
+    const responseJSON:APIResponse = await response.json()
 
-              return result
-            }),
-            synonyms: meaning.synonyms,
+    const data = responseJSON[0]
+
+    let partialResult:Partial<Word> = {
+      value: data.word,
+      phonetic: data.phonetic,
+      sourceUrls: data.sourceUrls,
+    }
+
+    const phoneticWithAudio = data.phonetics.find((phonetic) => {
+      return phonetic.audio !== ""
+    })
+    if (phoneticWithAudio) {
+      partialResult.audio = phoneticWithAudio.audio
+    }
+
+    partialResult.meanings = data.meanings.map((meaning:any) => {
+      return {
+        partOfSpeech: meaning.partOfSpeech,
+        definitions: meaning.definitions.map((definition:any) => {
+          let result:any = {
+            value: definition.definition,
           }
-        })
 
-        const result:Word = partialResult as Word
-        setWord(result)
-      })
+          if (definition.example) {
+            result.example = definition.example
+          }
+
+          return result
+        }),
+        synonyms: meaning.synonyms,
+      }
+    })
+
+    const result:Word = partialResult as Word
+    setWord(result)
   }
 
   const handleSubmit = (e:FormEvent) => {
@@ -293,68 +308,79 @@ const App = () => {
           </button>
         </form>
       </div>
-      <div className="mt-6 flex justify-between items-center md:mt-10">
-        <div>
-          <p className="text-32 font-bold dark:text-white md:text-64">{word.value}</p>
-          <p className="text-18 text-purple md:mt-1 md:text-24">{word.phonetic}</p>
-        </div>
-        <button type="button">
-          <img src={playIcon} className="w-12 md:w-20" />
-        </button>
-      </div>
-      {word.meanings.map((meaning, index) => (
-        <div key={index} className="mt-7 md:mt-10">
-          <div className="flex items-center">
-            <p className={classnames("text-18 font-bold dark:text-white md:text-24", {
-              "italic": font === fontTypes.serif
-            })}>{meaning.partOfSpeech}</p>
-            <div className="ml-4 grow border-t border-gray-200 dark:border-gray-400" />
+      {(word !== null && !notFoundErrorVisible) && (
+        <>
+          <div className="mt-6 flex justify-between items-center md:mt-10">
+            <div>
+              <p className="text-32 font-bold dark:text-white md:text-64">{word.value}</p>
+              <p className="text-18 text-purple md:mt-1 md:text-24">{word.phonetic}</p>
+            </div>
+            <button type="button">
+              <img src={playIcon} className="w-12 md:w-20" />
+            </button>
           </div>
-          <div className="mt-8 md:mt-10">
-            <p className="text-gray-300 md:text-20">Meaning</p>
-            <ul className="mt-4 pl-4 list-disc md:mt-6 md:pl-9">
-              {meaning.definitions.map((definition, index) => (
-                <li key={index} className="mt-3 first:mt-0 text-purple">
-                  <p className="text-gray-500 dark:text-white md:text-18">{definition.value}</p>
-                  {definition.example && (
-                    <p className="mt-3 text-gray-300 md:text-18">&#8220;{definition.example}&#8221;</p>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-          {(meaning.synonyms.length > 0) && (
-            <p className="mt-6 md:mt-10 lg:mt-16">
-              <span className="text-gray-300 md:text-20">Synonyms</span>
-              <span className="ml-6">
-                {meaning.synonyms.map((synonym, index) => (
-                  <button
-                    type="button"
-                    onClick={() => handleSynonymClick(synonym)}
-                    key={index}
-                    className="mr-3 font-bold text-purple md:text-20"
-                  >
-                    {synonym}
-                  </button>
-                ))}
-              </span>
-            </p>
-          )}
-        </div>
-      ))}
-      {(word.sourceUrls.length > 0) && (
-        <div className="mt-8 border-t md:mt-10 pt-6 md:pt-5 md:flex">
-          <p className="text-14">
-            <span className="border-b border-gray-300 text-gray-300">Source</span>
-          </p>
-          <div className="mt-2 md:ml-5 md:mt-0">
-            {word.sourceUrls.map((url, index) => (
-              <p key={index} className="mt-1 first:mt-0 flex items-center text-14">
-                <a href={url} target="_blank" className="dark:text-white underline">{url}</a>
-                <img src={newWindowIcon} className="w-3 ml-2" />
+          {word.meanings.map((meaning, index) => (
+            <div key={index} className="mt-7 md:mt-10">
+              <div className="flex items-center">
+                <p className={classnames("text-18 font-bold dark:text-white md:text-24", {
+                  "italic": font === fontTypes.serif
+                })}>{meaning.partOfSpeech}</p>
+                <div className="ml-4 grow border-t border-gray-200 dark:border-gray-400" />
+              </div>
+              <div className="mt-8 md:mt-10">
+                <p className="text-gray-300 md:text-20">Meaning</p>
+                <ul className="mt-4 pl-4 list-disc md:mt-6 md:pl-9">
+                  {meaning.definitions.map((definition, index) => (
+                    <li key={index} className="mt-3 first:mt-0 text-purple">
+                      <p className="text-gray-500 dark:text-white md:text-18">{definition.value}</p>
+                      {definition.example && (
+                        <p className="mt-3 text-gray-300 md:text-18">&#8220;{definition.example}&#8221;</p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {(meaning.synonyms.length > 0) && (
+                <p className="mt-6 md:mt-10 lg:mt-16">
+                  <span className="text-gray-300 md:text-20">Synonyms</span>
+                  <span className="ml-6">
+                    {meaning.synonyms.map((synonym, index) => (
+                      <button
+                        type="button"
+                        onClick={() => handleSynonymClick(synonym)}
+                        key={index}
+                        className="mr-3 font-bold text-purple md:text-20"
+                      >
+                        {synonym}
+                      </button>
+                    ))}
+                  </span>
+                </p>
+              )}
+            </div>
+          ))}
+          {(word.sourceUrls.length > 0) && (
+            <div className="mt-8 border-t md:mt-10 pt-6 md:pt-5 md:flex">
+              <p className="text-14">
+                <span className="border-b border-gray-300 text-gray-300">Source</span>
               </p>
-            ))}
-          </div>
+              <div className="mt-2 md:ml-5 md:mt-0">
+                {word.sourceUrls.map((url, index) => (
+                  <p key={index} className="mt-1 first:mt-0 flex items-center text-14">
+                    <a href={url} target="_blank" className="dark:text-white underline">{url}</a>
+                    <img src={newWindowIcon} className="w-3 ml-2" />
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+      {notFoundErrorVisible && (
+        <div className="mt-[132px]">
+          <img src={confusedEmojiIcon} className="w-10 mx-auto md:w-14 lg:w-16" />
+          <p className="mt-6 text-center font-bold text-16 dark:text-white md:mt-8 md:text-20 lg:mt-11">No definitions found</p>
+          <p className="mt-3 text-center text-gray-300 text-14 md:mt-4 md:text-18 lg:mt-6">Sorry pal, we couldn't find definitions for the word you were looking for. You can try the search again at later time or head to the web instead.</p>
         </div>
       )}
     </div>
