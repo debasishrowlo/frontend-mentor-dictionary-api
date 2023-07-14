@@ -256,7 +256,7 @@ const App = () => {
             className="h-full pl-4 border-l border-gray-100 dark:border-gray-200 flex items-center outline-none"
             onClick={() => toggleTheme()}
           >
-            <div className="w-10 h-5 px-1 flex items-center bg-gray-300 dark:bg-purple rounded-full">
+            <div className="w-10 h-5 px-1 flex items-center bg-gray-300 hover:bg-purple dark:bg-purple rounded-full duration-300 transition-colors">
               <div className="w-full h-full relative">
                 <div className={classnames("w-3.5 h-3.5 absolute top-1/2 -translate-y-1/2 bg-white rounded-full transition-all duration-500", {
                   "left-0 translate-x-0": !darkModeEnabled,
@@ -329,7 +329,7 @@ const App = () => {
                         type="button"
                         onClick={() => handleSynonymClick(synonym)}
                         key={index}
-                        className="mr-3 font-bold text-purple md:text-20"
+                        className="mr-3 border-b border-transparent hover:border-purple font-bold text-purple md:text-20 transition-colors duration-300"
                       >
                         {synonym}
                       </button>
