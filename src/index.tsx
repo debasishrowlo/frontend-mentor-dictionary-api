@@ -100,37 +100,9 @@ const App = () => {
   const [query, setQuery] = useState("")
   const [font, setFont] = useState(fontTypes.serif)
   const [theme, setTheme] = useState<themes>(getDefaultTheme())
-  const [word, setWord] = useState<Word>({
-    value: "keyboard",
-    phonetic: "/ˈkiːbɔːd/",
-    audio: "https://api.dictionaryapi.dev/media/pronunciations/en/keyboard-us.mp3",
-    meanings: [
-      {
-        partOfSpeech: "noun",
-        definitions: [
-          { value: "(etc.) A set of keys used to operate a typewriter, computer etc.", },
-          { value: "A component of many instruments including the piano, organ, and harpsichord consisting of usually black and white keys that cause different tones to be produced when struck.", },
-          { value: "A device with keys of a musical keyboard, used to control electronic sound-producing devices which may be built into or separate from the keyboard device.", },
-        ],
-        synonyms: ["electronic keyboard"],
-      },
-      {
-        partOfSpeech: "verb",
-        definitions: [
-          {
-            value: "To type on a computer keyboard.",
-            example: "Keyboarding is the part of this job I hate the most.",
-          },
-        ],
-        synonyms: [],
-      },
-    ],
-    sourceUrls: [
-      "https://en.wiktionary.org/wiki/keyboard",
-      "https://en.wiktionary.org/wiki/keyboard",
-    ],
-  });
+  const [word, setWord] = useState<Word|null>(null);
   const [errorVisible, setErrorVisible] = useState(false)
+  const [notFoundErrorVisible, setNotFoundErrorVisible] = useState(false)
 
   const darkModeEnabled = theme === themes.dark
 
@@ -196,6 +168,10 @@ const App = () => {
     if (query === "") {
       setErrorVisible(true)
       return
+    } 
+
+    if (errorVisible) {
+      setErrorVisible(false)
     }
 
     search(query)
@@ -237,9 +213,7 @@ const App = () => {
       document.documentElement.classList.remove("dark")
     }
 
-    setTimeout(() => {
-      document.documentElement.classList.remove("animate-all")
-    }, 500)
+    setTimeout(() => document.documentElement.classList.remove("animate-all"), 500)
 
     if (firstRender) { firstRenderRef.current = false }
   }, [theme])
@@ -298,7 +272,10 @@ const App = () => {
         <form onSubmit={(e:FormEvent) => handleSubmit(e)} className="flex relative bg-gray-100 dark:bg-gray-600 rounded-2xl">
           <input 
             type="text" 
-            className="w-full pl-6 pr-14 py-3 border border-transparent focus:border-purple bg-transparent font-bold dark:text-white rounded-2xl outline-none caret-purple transition-colors duration-200 md:text-20"
+            className={classnames("w-full pl-6 pr-14 py-3 border bg-transparent font-bold dark:text-white rounded-2xl outline-none caret-purple transition-colors duration-200 md:text-20", {
+              "border-transparent focus:border-purple ": !errorVisible,
+              "border-red": errorVisible,
+            })}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             autoFocus
@@ -308,7 +285,10 @@ const App = () => {
           </button>
         </form>
       </div>
-      {(word !== null && !notFoundErrorVisible) && (
+      {errorVisible && (
+        <p className="mt-2 text-16 md:text-18 lg:text-20 text-red">Whoops, can’t be empty…</p>
+      )}
+      {(word !== null && notFoundErrorVisible === false) && (
         <>
           <div className="mt-6 flex justify-between items-center md:mt-10">
             <div>
