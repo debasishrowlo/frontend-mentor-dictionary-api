@@ -20,5 +20,22 @@ body {
   box-shadow: 0px 5px 30px 0px #A445ED;
 }
 
+.triangle {
+  border-top: 0;
+  border-right-width: calc(14px / 2);
+  border-bottom-width: calc(0.866px * 14);
+  border-left-width: calc(14px / 2);
+  @apply w-0 h-0 ml-0.5 mt-px absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-l-transparent border-r-transparent border-b-purple group-hover:border-b-white rotate-90 transition-colors duration-300;
+}
+
+@media screen(sm) {
+  .triangle {
+    border-top: 0;
+    border-right-width: calc(20px / 2);
+    border-bottom-width: calc(0.866px * 20);
+    border-left-width: calc(20px / 2);
+  }
+}
+
 @tailwind components;
 @tailwind utilities;

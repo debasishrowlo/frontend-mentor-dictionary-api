@@ -32,7 +32,6 @@ module.exports = {
         "weight-700": 700,
       },
       colors: {
-        "light-purple": "#8F19E8",
         "purple": "#A445ED",
         "red": "#FF5252",
         "gray": {

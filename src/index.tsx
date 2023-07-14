@@ -8,7 +8,6 @@ import MoonIcon from "./icons/Moon"
 
 import arrowDownIcon from "./assets/images/icon-arrow-down.svg"
 import searchIcon from "./assets/images/icon-search.svg"
-import playIcon from "./assets/images/icon-play.svg"
 import newWindowIcon from "./assets/images/icon-new-window.svg"
 import confusedEmojiIcon from "./assets/images/confused-emoji.svg"
 
@@ -295,8 +294,9 @@ const App = () => {
               <p className="text-32 font-bold dark:text-white md:text-64">{word.value}</p>
               <p className="text-18 text-purple md:mt-1 md:text-24">{word.phonetic}</p>
             </div>
-            <button type="button">
-              <img src={playIcon} className="w-12 md:w-20" />
+            <button type="button" className="w-12 h-12 md:w-20 md:h-20 relative group">
+              <div className="w-full h-full flex items-center justify-center rounded-full bg-purple opacity-25 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="triangle"></div>
             </button>
           </div>
           {word.meanings.map((meaning, index) => (
