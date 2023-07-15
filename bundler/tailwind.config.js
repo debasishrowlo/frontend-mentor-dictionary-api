@@ -9,17 +9,18 @@ const content = Object.values(globEntries(paths.src + "/**/*.{html,js,jsx,ts,tsx
 const fontSizes = {}
 const minFontSize = 12
 const maxFontSize = 70
+const base = 16
 let i = minFontSize
 while (i <= maxFontSize) {
-  fontSizes[i] = `${i / 16}rem`
-  i = i + 2
+  fontSizes[i] = `${i / base}rem`
+  i += 2
 }
 
 module.exports = {
   content: content,
   darkMode: "class",
   theme: {
-    fontSize: { ...fontSizes },
+    fontSize: fontSizes,
     extend: {
       fontFamily: {
         'sans': ['Inter', ...defaultTheme.fontFamily.sans],

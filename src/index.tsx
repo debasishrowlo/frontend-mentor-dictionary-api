@@ -15,8 +15,8 @@ import "./index.css"
 
 type Word = {
   value: string,
-  phonetic: string,
-  audio?: string,
+  phonetic: string | null,
+  audio: string | null,
   meanings: Array<{
     partOfSpeech: string,
     definitions: Array<{
@@ -100,6 +100,7 @@ const App = () => {
   const [font, setFont] = useState(fontTypes.serif)
   const [theme, setTheme] = useState<themes>(getDefaultTheme())
   const [word, setWord] = useState<Word|null>(null);
+  const [playButtonDisabled, setPlayButtonDisabled] = useState(false)
   const [errorVisible, setErrorVisible] = useState(false)
   const [notFoundErrorVisible, setNotFoundErrorVisible] = useState(false)
 
@@ -126,20 +127,26 @@ const App = () => {
 
     const data = responseJSON[0]
 
-    let partialResult:Partial<Word> = {
+    let partialWord:Partial<Word> = {
       value: data.word,
-      phonetic: data.phonetic,
       sourceUrls: data.sourceUrls,
+      phonetic: null,
+      audio: null,
     }
 
     const phoneticWithAudio = data.phonetics.find((phonetic) => {
       return phonetic.audio !== ""
     })
     if (phoneticWithAudio) {
-      partialResult.audio = phoneticWithAudio.audio
+      partialWord.phonetic = phoneticWithAudio.text
+      partialWord.audio = phoneticWithAudio.audio
+    } else {
+      if (data.phonetics.length > 0) {
+        partialWord.phonetic = data.phonetics[0].text
+      }
     }
 
-    partialResult.meanings = data.meanings.map((meaning:any) => {
+    partialWord.meanings = data.meanings.map((meaning:any) => {
       return {
         partOfSpeech: meaning.partOfSpeech,
         definitions: meaning.definitions.map((definition:any) => {
@@ -157,7 +164,7 @@ const App = () => {
       }
     })
 
-    const result:Word = partialResult as Word
+    const result:Word = partialWord as Word
     setWord(result)
   }
 
@@ -200,6 +207,17 @@ const App = () => {
 
   const toggleTheme = () => {
     setTheme(theme === themes.dark ? themes.light : themes.dark)
+  }
+
+  const playAudio = ()  => {
+    if (word.audio !== null) {
+      setPlayButtonDisabled(true)
+      const audio = new Audio(word.audio)
+
+      audio.play()
+
+      audio.onended = () => setPlayButtonDisabled(false)
+    }
   }
 
   useEffect(() => {
@@ -292,12 +310,21 @@ const App = () => {
           <div className="mt-6 flex justify-between items-center md:mt-10">
             <div>
               <p className="text-32 font-bold dark:text-white md:text-64">{word.value}</p>
-              <p className="text-18 text-purple md:mt-1 md:text-24">{word.phonetic}</p>
+              {word.phonetic && (
+                <p className="text-18 text-purple md:mt-1 md:text-24">{word.phonetic}</p>
+              )}
             </div>
-            <button type="button" className="w-12 h-12 md:w-20 md:h-20 relative group">
-              <div className="w-full h-full flex items-center justify-center rounded-full bg-purple opacity-25 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="triangle"></div>
-            </button>
+            {(word.audio !== null) && (
+              <button
+                type="button" 
+                className="w-12 h-12 md:w-20 md:h-20 relative group"
+                onClick={() => playAudio()}
+                disabled={playButtonDisabled}
+              >
+                <div className="w-full h-full flex items-center justify-center rounded-full bg-purple opacity-25 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="triangle"></div>
+              </button>
+            )}
           </div>
           {word.meanings.map((meaning, index) => (
             <div key={index} className="mt-7 md:mt-10">
