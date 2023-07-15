@@ -5,6 +5,7 @@ import { Listbox, Transition } from "@headlessui/react"
 
 import Logo from "./icons/Logo"
 import MoonIcon from "./icons/Moon"
+import PlayIcon from "./icons/Play"
 
 import arrowDownIcon from "./assets/images/icon-arrow-down.svg"
 import searchIcon from "./assets/images/icon-search.svg"
@@ -254,7 +255,7 @@ const App = () => {
                 leaveFrom="translate-y-0 opacity-100"
                 leaveTo="-translate-y-2 opacity-0"
               >
-                <Listbox.Options className="w-44 mt-2 py-4 absolute z-10 top-full right-4 bg-white dark:bg-gray-600 rounded-2xl dropdown-shadow">
+                <Listbox.Options className="w-44 mt-2 py-4 absolute z-10 top-full right-4 bg-white dark:bg-gray-600 rounded-2xl shadow-[0_5px_30px_0px_rgba(0,0,0,0.10)] dark:shadow-purple">
                   {Object.keys(fontTypes).map((fontKey) => (
                     <Listbox.Option 
                       key={fontKey}
@@ -322,7 +323,7 @@ const App = () => {
                 disabled={playButtonDisabled}
               >
                 <div className="w-full h-full flex items-center justify-center rounded-full bg-purple opacity-25 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="triangle"></div>
+                <PlayIcon className="w-6 h-6 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-purple group-hover:text-white transition-colors duration-300" />
               </button>
             )}
           </div>
