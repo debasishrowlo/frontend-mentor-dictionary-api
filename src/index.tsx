@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, FormEvent } from "react"
+import React, { useEffect, useState, useRef, FormEvent, ReactNode } from "react"
 import { createRoot } from "react-dom/client"
 import classnames from "classnames"
 import { Listbox, Transition } from "@headlessui/react"
@@ -59,6 +59,13 @@ type APIResponse = Array<{
   sourceUrls: string[],
 }>
 
+const enum appStates {
+  empty = "empty",
+  word = "word",
+  loading = "loading",
+  notFound = "notFound",
+}
+
 const enum themes {
   light = "light",
   dark = "dark",
@@ -97,26 +104,24 @@ const getDefaultTheme = () => {
 const App = () => {
   const firstRenderRef = useRef(true)
 
+  const [appState, setAppState] = useState<appStates>(appStates.empty)
   const [query, setQuery] = useState("")
   const [font, setFont] = useState(fontTypes.serif)
   const [theme, setTheme] = useState<themes>(getDefaultTheme())
   const [word, setWord] = useState<Word|null>(null);
   const [playButtonDisabled, setPlayButtonDisabled] = useState(false)
   const [errorVisible, setErrorVisible] = useState(false)
-  const [notFoundErrorVisible, setNotFoundErrorVisible] = useState(false)
 
   const darkModeEnabled = theme === themes.dark
 
   const search = async (word:string) => {
-    if (notFoundErrorVisible) {
-      setNotFoundErrorVisible(false)
-    }
+    setAppState(appStates.loading)
 
     const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
 
     if (!response.ok) {
       if (response.status === 404) {
-        setNotFoundErrorVisible(true)
+        setAppState(appStates.notFound)
         return
       }
 
@@ -167,6 +172,7 @@ const App = () => {
 
     const result:Word = partialWord as Word
     setWord(result)
+    setAppState(appStates.word)
   }
 
   const handleSubmit = (e:FormEvent) => {
@@ -306,7 +312,7 @@ const App = () => {
       {errorVisible && (
         <p className="mt-2 text-16 md:text-18 lg:text-20 text-red">Whoops, can’t be empty…</p>
       )}
-      {(word !== null && notFoundErrorVisible === false) && (
+      {(appState === appStates.word) && (
         <>
           <div className="mt-6 flex justify-between items-center md:mt-10">
             <div>
@@ -384,7 +390,7 @@ const App = () => {
           )}
         </>
       )}
-      {notFoundErrorVisible && (
+      {(appState === appStates.notFound) && (
         <div className="mt-[132px]">
           <img src={confusedEmojiIcon} className="w-10 mx-auto md:w-14 lg:w-16" />
           <p className="mt-6 text-center font-bold text-16 dark:text-white md:mt-8 md:text-20 lg:mt-11">No definitions found</p>
