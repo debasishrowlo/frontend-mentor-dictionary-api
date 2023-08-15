@@ -105,7 +105,7 @@ const App = () => {
   const firstRenderRef = useRef(true)
 
   const [appState, setAppState] = useState<appStates>(appStates.empty)
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState("Keyboard")
   const [font, setFont] = useState(fontTypes.serif)
   const [theme, setTheme] = useState<themes>(getDefaultTheme())
   const [word, setWord] = useState<Word|null>(null);
@@ -226,6 +226,10 @@ const App = () => {
       audio.onended = () => setPlayButtonDisabled(false)
     }
   }
+
+  useEffect(() => {
+    search(query)
+  }, [])
 
   useEffect(() => {
     const firstRender = firstRenderRef.current
