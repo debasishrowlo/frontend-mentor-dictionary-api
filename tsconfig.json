@@ -5,7 +5,7 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": false,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "lib": ["dom", "ES6"],
     "module": "esnext",
     "moduleResolution": "node",
