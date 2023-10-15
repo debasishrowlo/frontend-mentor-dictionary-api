@@ -3,35 +3,28 @@ const globEntries = require('webpack-glob-entries-extended')
 
 const paths = require("./paths.js")
 
-// NOTE: Required because webpack does not support extended globs
-const content = Object.values(globEntries(paths.src + "/**/*.{html,js,jsx,ts,tsx}"))
-
-const fontSizes = {}
+const fontSize = {}
 const minFontSize = 12
 const maxFontSize = 70
 const base = 16
 let i = minFontSize
 while (i <= maxFontSize) {
-  fontSizes[i] = `${i / base}rem`
+  fontSize[i] = `${i / base}rem`
   i += 2
 }
 
+const borderRadius = [0, 2, 4, 6, 8, 12, 16, 24].reduce((acc, cur) => {
+  acc[cur] = `${cur / base}rem`
+  return acc
+}, {})
+borderRadius["full"] = "9999px"
+
 module.exports = {
-  content: content,
+  content: Object.values(globEntries(paths.src + "/**/*.{html,js,jsx,ts,tsx}")),
   darkMode: "class",
   theme: {
-    fontSize: fontSizes,
     extend: {
-      fontFamily: {
-        'sans': ['Inter', ...defaultTheme.fontFamily.sans],
-        'serif': ['Lora', ...defaultTheme.fontFamily.serif],
-        'mono': ['Inconsolata', ...defaultTheme.fontFamily.mono],
-      },
-      fontWeight: {
-        "weight-400": 400,
-        "weight-500": 500,
-        "weight-700": 700,
-      },
+      borderRadius,
       colors: {
         "purple": "#A445ED",
         "red": "#FF5252",
@@ -46,6 +39,12 @@ module.exports = {
         "black": "#050505",
         "white": "#FFFFFF",
       },
+      fontFamily: {
+        'sans': ['Inter', ...defaultTheme.fontFamily.sans],
+        'serif': ['Lora', ...defaultTheme.fontFamily.serif],
+        'mono': ['Inconsolata', ...defaultTheme.fontFamily.mono],
+      },
+      fontSize,
     },
   },
   plugins: [],

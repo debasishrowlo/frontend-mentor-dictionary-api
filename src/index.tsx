@@ -4,7 +4,7 @@ import "./index.css"
 
 const App = () => {
   return (
-    <div className="text-30">Dictionary App</div>
+    <div>Dictionary App</div>
   )
 }
 
