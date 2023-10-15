@@ -239,7 +239,7 @@ const App = () => {
                 leaveFrom="translate-y-0 opacity-100"
                 leaveTo="-translate-y-2 opacity-0"
               >
-                <Listbox.Options className="w-44 mt-2 py-4 absolute z-10 top-full right-4 bg-white dark:bg-gray-600 rounded-2xl shadow-[0_5px_30px_0px_rgba(0,0,0,0.10)] dark:shadow-purple">
+                <Listbox.Options className="w-44 mt-2 py-4 absolute z-10 top-full right-4 bg-white dark:bg-gray-600 rounded-16 shadow-[0_5px_30px_0px_rgba(0,0,0,0.10)] dark:shadow-purple">
                   {fonts.map((font, index) => (
                     <Listbox.Option 
                       key={index}
@@ -268,10 +268,10 @@ const App = () => {
         </div>
       </div>
       <div className="mt-6 md:mt-12">
-        <form onSubmit={(e:FormEvent) => handleSubmit(e)} className="flex relative bg-gray-100 dark:bg-gray-600 rounded-2xl">
+        <form onSubmit={(e:FormEvent) => handleSubmit(e)} className="flex relative bg-gray-100 dark:bg-gray-600 rounded-16">
           <input 
             type="text" 
-            className={classnames("w-full pl-6 pr-14 py-3 border bg-transparent font-bold dark:text-white rounded-2xl outline-none caret-purple transition-colors duration-200 md:text-20", {
+            className={classnames("w-full pl-6 pr-14 py-3 border bg-transparent font-bold dark:text-white rounded-16 outline-none caret-purple transition-colors duration-200 md:text-20", {
               "border-transparent focus:border-purple ": !queryErrorVisible,
               "border-red": queryErrorVisible,
             })}
